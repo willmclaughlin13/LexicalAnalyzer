@@ -1,7 +1,3 @@
-//
-// Created by Will on 9/28/2019.
-//
-
 #include <iomanip>
 #include <cstdlib>
 #include "LexicalAnalyzer.h"
@@ -18,6 +14,15 @@ static string token_names[] = {	"IDENT_T", "NUMLIT_T", "STRLIT_T", "LISTOP_T", "
 LexicalAnalyzer::LexicalAnalyzer (char * filename)
 {
     // This function will initialize the lexical analyzer class
+
+    string rootFileName = filename;
+    for (int i = 0; i < 3; ++i) {
+        rootFileName.pop_back();
+    }
+    this->input.open(filename);
+    this->listingFile.open(rootFileName + ".lst", ofstream::out | ofstream::trunc);
+    this->debugFile.open(rootFileName + ".dbg", ofstream::out | ofstream::trunc);
+    this->tokenFile.open(rootFileName + ".p1", ofstream::out | ofstream::trunc);
 }
 
 LexicalAnalyzer::~LexicalAnalyzer ()
