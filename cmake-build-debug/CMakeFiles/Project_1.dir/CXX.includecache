@@ -1,0 +1,66 @@
+#IncludeRegexLine: ^[ 	]*[#%][ 	]*(include|import)[ 	]*[<"]([^">]+)([">])
+
+#IncludeRegexScan: ^.*$
+
+#IncludeRegexComplain: ^$
+
+#IncludeRegexTransform: 
+
+/mnt/c/Users/Will/Documents/CS460/Project 1/LexicalAnalyzer.cpp
+iomanip
+-
+cstdlib
+-
+LexicalAnalyzer.h
+/mnt/c/Users/Will/Documents/CS460/Project 1/LexicalAnalyzer.h
+
+/mnt/c/Users/Will/Documents/CS460/Project 1/LexicalAnalyzer.h
+iostream
+-
+fstream
+-
+
+/mnt/c/Users/Will/Documents/CS460/Project 1/Project1.cpp
+cstdlib
+-
+iostream
+-
+iomanip
+-
+SetLimits.h
+/mnt/c/Users/Will/Documents/CS460/Project 1/SetLimits.h
+SyntacticalAnalyzer.h
+/mnt/c/Users/Will/Documents/CS460/Project 1/SyntacticalAnalyzer.h
+
+/mnt/c/Users/Will/Documents/CS460/Project 1/SetLimits.cpp
+sys/time.h
+-
+sys/resource.h
+-
+unistd.h
+-
+SetLimits.h
+/mnt/c/Users/Will/Documents/CS460/Project 1/SetLimits.h
+
+/mnt/c/Users/Will/Documents/CS460/Project 1/SetLimits.h
+
+/mnt/c/Users/Will/Documents/CS460/Project 1/SyntacticalAnalyzer.cpp
+iostream
+-
+iomanip
+-
+fstream
+-
+cstring
+-
+SyntacticalAnalyzer.h
+/mnt/c/Users/Will/Documents/CS460/Project 1/SyntacticalAnalyzer.h
+
+/mnt/c/Users/Will/Documents/CS460/Project 1/SyntacticalAnalyzer.h
+iostream
+-
+fstream
+-
+LexicalAnalyzer.h
+/mnt/c/Users/Will/Documents/CS460/Project 1/LexicalAnalyzer.h
+
