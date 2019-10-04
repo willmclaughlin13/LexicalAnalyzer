@@ -10,7 +10,26 @@
 
 using namespace std;
 
-enum token_type {NONE = -1, EOF_T, NUM_TOKENS};
+enum token_type {NONE = -18,
+                IDENT_T,
+                NUMLIT_T,
+                STRLIT_T,
+                LISTOP_T,
+                PLUS_T,
+                MINUS_T,
+                DIV_T,
+                MULT_T,
+                EQUALTO_T,
+                EOF_T,
+                GT_T,
+                LT_T,
+                GTE_T,
+                LTE_T,
+                LPAREN_T,
+                RPAREN_T,
+                SQUOTE_T,
+                ERROR_T,
+                NUM_TOKENS};
 
 class LexicalAnalyzer
 {
@@ -32,6 +51,7 @@ private:
     int pos;
     string lexeme;
     int errors;
+    char errorChar;
 };
 
 #endif

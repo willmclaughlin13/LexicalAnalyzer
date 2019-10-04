@@ -11,6 +11,7 @@ int main (int argc, char * argv[])
         printf ("format: proj1 <filename>\n");
         exit (1);
     }
+
     SetLimits ();
     SyntacticalAnalyzer parser (argv[1]);
 
