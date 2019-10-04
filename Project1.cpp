@@ -13,26 +13,7 @@ int main (int argc, char * argv[])
     }
 
     SetLimits ();
-    //generateLst(argv[1], lstFileName);
     SyntacticalAnalyzer parser (argv[1]);
 
     return 0;
 }
-
-
-/*void generateLst(const string& fileName, const string& outFileName) {
-    ifstream infile(fileName);
-    ofstream outfile;
-
-    outfile.open(outFileName, ofstream::out | ofstream::trunc);
-
-    string line;
-    int lineNo = 1;
-
-    while (getline(infile, line)) {
-        outfile << lineNo << ": " << line << endl;
-        lineNo++;
-    }
-    infile.close();
-    outfile.close();
-}*/
