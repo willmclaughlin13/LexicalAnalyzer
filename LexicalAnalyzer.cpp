@@ -3,6 +3,7 @@
 #include "LexicalAnalyzer.h"
 #include <map>
 #include <algorithm>
+
 using namespace std;
 
 static string token_names[] = {	"IDENT_T", "NUMLIT_T", "STRLIT_T", "LISTOP_T", "PLUS_T",
@@ -26,6 +27,7 @@ LexicalAnalyzer::LexicalAnalyzer (char * filename)
     listingFile.open(rootFileName + ".lst", ofstream::out | ofstream::trunc);
     debugFile.open(rootFileName + ".dbg", ofstream::out | ofstream::trunc);
     tokenFile.open(rootFileName + ".p1", ofstream::out | ofstream::trunc);
+    listingFile << "Input file: " << rootFileName + ".ss" << endl;
 }
 
 LexicalAnalyzer::~LexicalAnalyzer ()
@@ -85,7 +87,8 @@ token_type LexicalAnalyzer::GetToken ()
     string word;
     while(input.get(c)) {
         currentPos++;
-        line += c;
+        if (c != '\n' || input.peek() == '\n')
+            line += c;
         state--; // Because our states start at 1, but C++ starts at 0
         word += c;
 
@@ -141,9 +144,8 @@ token_type LexicalAnalyzer::GetToken ()
         state = table[state][inputVal];
 
         if (c == '\n') { // End of line
-            if (line != "\n")
-                listingFile << line;
             linenum++;
+            listingFile << setw(5) << linenum << ": " << line;
             if (pos != -1)
                 listingFile << "\nError at " << linenum << "," << pos << ": Invalid character found: " << errorChar << endl;
             line.clear();
@@ -154,15 +156,15 @@ token_type LexicalAnalyzer::GetToken ()
 
         if (state <= 0) { // Found Token
             // Leading and trailing spaces fucking up the map
-            word.erase(remove(word.begin(), word.end(), ' '), word.end());
+            word.erase(remove_if(word.begin(), word.end(), ::isspace), word.end());
 
             if (state == 0 && !word.empty() && word != "\n") { // ERROR!
-                cout << "\nWORD:" << word;
                 pos = currentPos;
                 errorChar = c;
                 errors++;
-            }
-            if (state == -17) { // Token is IDENT_T?
+                tokenFile << left << setw(10) << token_names[state+17] << setw(20) << word << endl;
+
+            } else if (state == -17) { // Token is IDENT_T?
                 map<string, string>::iterator it;
                 token = EOF_T; // Garbage, fix later.
 
