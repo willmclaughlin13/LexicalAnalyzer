@@ -1,12 +1,25 @@
-1: identifier ident_1 function
-2: 0 123 1.1 -1.1 +1.1 12. -.1
-3: "Hello World"
-4: 
-5: cons if cond display newline and or not define
-6: car cdr cadr cddr ?number
-7: number? list?$zero? null? string?
-8: 
-9: + - / * modulo round
-10: = > < >= <=
-11: ( ) 'a
-12: 
+identifier ident_1 function
+0 123 1.1 -1.1 +1.1 12. -.1
+
+Error at 2,24: Invalid character found:  
+"Hello World"
+
+Error at 3,14: Invalid character found: 
+
+
+Error at 4,1: Invalid character found: 
+cons if cond display newline and or not define
+car cdr cadr cddr ?number
+
+Error at 6,19: Invalid character found: ?
+number? list?$zero? null? string?
+
+Error at 7,34: Invalid character found: 
+
+
+Error at 8,1: Invalid character found: 
++ - / * modulo round
+= > < >= <=
+
+Error at 10,12: Invalid character found: 
+8 errors found in input file

@@ -1,37 +1,40 @@
 #include <iomanip>
 #include <cstdlib>
 #include "LexicalAnalyzer.h"
-
+#include <map>
+#include <algorithm>
 using namespace std;
 
-static string token_names[] = {	"IDENT_T", "NUMLIT_T", "STRLIT_T", "LISTOP_T", "CONS_T", "IF_T",
-                                "COND_T", "ELSE_T", "DISPLAY_T", "NEWLINE_T", "AND_T", "OR_T",
-                                "NOT_T", "DEFINE_T", "NUMBERP_T", "LISTP_T", "ZEROP_T", "NULLP_T",
-                                "STRLIT_T", "PLUS_T", "MINUS_T", "DIV_T", "MULT_T", "MODULO_T",
-                                "ROUND_T", "EQUALTO_T", "GT_T", "LT_T", "GTE_T", "LTE_T", "LPAREN_T",
-                                "RPAREN_T", "SQUOTE_T", "ERROR_T", "EOF_T"};
+static string token_names[] = {	"IDENT_T", "NUMLIT_T", "STRLIT_T", "LISTOP_T", "PLUS_T",
+                                   "MINUS_T", "DIV_T", "MULT_T", "EQUALTO_T", "EOF_T",
+                                   "GT_T", "LT_T", "GTE_T", "LTE_T", "LPAREN_T", "RPAREN_T",
+                                   "SQUOTE_T", "ERROR_T"};
 
 LexicalAnalyzer::LexicalAnalyzer (char * filename)
 {
     // This function will initialize the lexical analyzer class
+    token = NONE;
+    linenum = 0;
+    pos = -1;
+    errors = 0;
 
     string rootFileName = filename;
     for (int i = 0; i < 3; ++i) {
         rootFileName.pop_back();
     }
-    this->input.open(filename);
-    this->listingFile.open(rootFileName + ".lst", ofstream::out | ofstream::trunc);
-    this->debugFile.open(rootFileName + ".dbg", ofstream::out | ofstream::trunc);
-    this->tokenFile.open(rootFileName + ".p1", ofstream::out | ofstream::trunc);
+    input.open(filename);
+    listingFile.open(rootFileName + ".lst", ofstream::out | ofstream::trunc);
+    debugFile.open(rootFileName + ".dbg", ofstream::out | ofstream::trunc);
+    tokenFile.open(rootFileName + ".p1", ofstream::out | ofstream::trunc);
 }
 
 LexicalAnalyzer::~LexicalAnalyzer ()
 {
     // This function will complete the execution of the lexical analyzer class
-    this->input.close();
-    this->listingFile.close();
-    this->debugFile.close();
-    this->tokenFile.close();
+    input.close();
+    listingFile.close();
+    debugFile.close();
+    tokenFile.close();
 }
 
 token_type LexicalAnalyzer::GetToken ()
@@ -57,76 +60,125 @@ token_type LexicalAnalyzer::GetToken ()
             {15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, STRLIT_T, 15}
     };
 
-    //while(!this->input.eof()) {
+    map<string, string> keyNames;
+    keyNames.insert(pair<string, string>("cons", "CONST_T"));
+    keyNames.insert(pair<string, string>("if", "IF_T"));
+    keyNames.insert(pair<string, string>("cond", "COND_T"));
+    keyNames.insert(pair<string, string>("else", "ELSE_T"));
+    keyNames.insert(pair<string, string>("display", "DISPLAY_T"));
+    keyNames.insert(pair<string, string>("newline", "NEWLINE_T"));
+    keyNames.insert(pair<string, string>("and", "AND_T"));
+    keyNames.insert(pair<string, string>("or", "OR_T"));
+    keyNames.insert(pair<string, string>("not", "NOT_T"));
+    keyNames.insert(pair<string, string>("define", "DEFINE_T"));
+    keyNames.insert(pair<string, string>("number?", "NUMBERP_T"));
+    keyNames.insert(pair<string, string>("list?", "LISTP_T"));
+    keyNames.insert(pair<string, string>("zero?", "ZEROP_T"));
+    keyNames.insert(pair<string, string>("null?", "NULLP_T"));
+    keyNames.insert(pair<string, string>("string?", "STRINGP_T"));
+    keyNames.insert(pair<string, string>("modulo", "MODULO_T"));
+    keyNames.insert(pair<string, string>("round", "ROUND_T"));
+
     char c;
-    int input = 0;
+    int inputVal = 0;
+    int currentPos = 0;
     string word;
-    while(this->input.get(c)) {
-        if (c == '\n')
-            this->input.get(c);
+    while(input.get(c)) {
+        currentPos++;
+        line += c;
         state--; // Because our states start at 1, but C++ starts at 0
         word += c;
+
         bool other = false;
-        //cout << c;
         switch(c) {
             case '+':
-                input = 0;break;
+                inputVal = 0;break;
             case '-':
-                input = 1;break;
+                inputVal = 1;break;
             case '.':
-                input = 2;break;
+                inputVal = 2;break;
             case '/':
-                input = 3;break;
+                inputVal = 3;break;
             case '*':
-                input = 4;break;
+                inputVal = 4;break;
             case '>':
-                input = 5;break;
+                inputVal = 5;break;
             case '<':
-                input = 6;break;
+                inputVal = 6;break;
             case '=':
-                input = 7;break;
+                inputVal = 7;break;
             case '(':
-                input = 8;break;
+                inputVal = 8;break;
             case ')':
-                input = 9;break;
+                inputVal = 9;break;
             case '\'':
-                input = 10;break;
+                inputVal = 10;break;
             case 'c':
-                input = 11;break;
+                inputVal = 11;break;
             case 'a':
-                input = 12;break;
+                inputVal = 12;break;
             case 'd':
-                input = 13;break;
+                inputVal = 13;break;
             case 'r':
-                input = 14;break;
+                inputVal = 14;break;
             case ' ':
-                input = 17;break;
+                inputVal = 17;break;
             case '_':
-                input = 18;break;
+                inputVal = 18;break;
             case '"':
-                input = 19;break;
+                inputVal = 19;break;
             default:
                 other = true;break;
         }
         if (other) {
             if (isalpha(c))
-                input = 15;
+                inputVal = 15;
             else if (isdigit(c))
-                input = 16;
+                inputVal = 16;
             else
-                input = 20;
+                inputVal = 20;
         }
-        state = table[state][input];
-        if (state <= 0) {
-            cout << token_names[state+35] << '\t' << word << endl;
+        state = table[state][inputVal];
+
+        if (c == '\n') { // End of line
+            if (line != "\n")
+                listingFile << line;
+            linenum++;
+            if (pos != -1)
+                listingFile << "\nError at " << linenum << "," << pos << ": Invalid character found: " << errorChar << endl;
+            line.clear();
+
+            pos = -1;
+            currentPos = 0;
+        }
+
+        if (state <= 0) { // Found Token
+            // Leading and trailing spaces fucking up the map
+            word.erase(remove(word.begin(), word.end(), ' '), word.end());
+
+            if (state == 0 && !word.empty() && word != "\n") { // ERROR!
+                cout << "\nWORD:" << word;
+                pos = currentPos;
+                errorChar = c;
+                errors++;
+            }
+            if (state == -17) { // Token is IDENT_T?
+                map<string, string>::iterator it;
+                token = EOF_T; // Garbage, fix later.
+
+
+                it = keyNames.find(word);
+                if (it == keyNames.end())
+                    tokenFile << left << setw(10) << token_names[state + 17] << setw(20) << word << endl;
+                else
+                    tokenFile << left << setw(10) << it->second << setw(20) << word << endl;
+            } else
+                tokenFile << left << setw(10) << token_names[state+17] << setw(20) << word << endl;
             state = 1;
             word.clear();
         }
     }
-    //token = state;
-    //cout << "State: " << state << endl;
-
-    //token = table[this->linenum][this->pos];
+    listingFile << errors << " errors found in input file\n";
     return token;
 }
 
