@@ -17,6 +17,8 @@ map
 -
 algorithm
 -
+cstring
+-
 
 /mnt/c/Users/Will/Documents/CS460/Project 1/LexicalAnalyzer.h
 iostream

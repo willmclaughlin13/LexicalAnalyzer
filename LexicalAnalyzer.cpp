@@ -1,5 +1,4 @@
 #include <iomanip>
-#include <cstdlib>
 #include "LexicalAnalyzer.h"
 #include <map>
 #include <algorithm>
@@ -44,26 +43,26 @@ token_type LexicalAnalyzer::GetToken ()
     // This function will find the next lexeme int the input file and return
     // the token_type value associated with that lexeme
     int state = 1;
-    int table[][21] = {
-            {3, 2, 4, DIV_T, MULT_T, 7, 8, EQUALTO_T, LPAREN_T, RPAREN_T , SQUOTE_T, 9, 12, 12, 12, 12, 5, 1, ERROR_T, 15, ERROR_T},
-            {MINUS_T, MINUS_T, 6, MINUS_T, MINUS_T, MINUS_T, MINUS_T, MINUS_T, MINUS_T, MINUS_T, MINUS_T, MINUS_T, MINUS_T, MINUS_T, MINUS_T, MINUS_T, 2, MINUS_T, MINUS_T, MINUS_T, MINUS_T},
-            {PLUS_T, PLUS_T, 6, PLUS_T, PLUS_T, PLUS_T, PLUS_T, PLUS_T, PLUS_T, PLUS_T, PLUS_T, PLUS_T, PLUS_T, PLUS_T, PLUS_T, PLUS_T, 3, PLUS_T, PLUS_T, PLUS_T, PLUS_T},
-            {ERROR_T, ERROR_T, ERROR_T, ERROR_T, ERROR_T, ERROR_T, ERROR_T, ERROR_T, ERROR_T, ERROR_T, ERROR_T, ERROR_T, ERROR_T, ERROR_T, ERROR_T, ERROR_T, 6, ERROR_T, ERROR_T, ERROR_T, ERROR_T},
-            {NUMLIT_T, NUMLIT_T, 6, NUMLIT_T, NUMLIT_T, NUMLIT_T, NUMLIT_T, NUMLIT_T, NUMLIT_T, NUMLIT_T, NUMLIT_T, NUMLIT_T, NUMLIT_T, NUMLIT_T, NUMLIT_T, NUMLIT_T, NUMLIT_T, NUMLIT_T, NUMLIT_T, NUMLIT_T, NUMLIT_T},
-            {NUMLIT_T, NUMLIT_T, NUMLIT_T, NUMLIT_T, NUMLIT_T, NUMLIT_T, NUMLIT_T, NUMLIT_T, NUMLIT_T, NUMLIT_T, NUMLIT_T, NUMLIT_T, NUMLIT_T, NUMLIT_T, NUMLIT_T, NUMLIT_T, 6, NUMLIT_T, NUMLIT_T, NUMLIT_T, NUMLIT_T},
+    token_type table[][21] = {
+            {STATE_3, STATE_2, STATE_4, DIV_T, MULT_T, STATE_7, STATE_8, EQUALTO_T, LPAREN_T, RPAREN_T , SQUOTE_T, STATE_9, STATE_12, STATE_12, STATE_12, STATE_12, STATE_5, STATE_1, ERROR_T, STATE_15, ERROR_T},
+            {MINUS_T, MINUS_T, STATE_6, MINUS_T, MINUS_T, MINUS_T, MINUS_T, MINUS_T, MINUS_T, MINUS_T, MINUS_T, MINUS_T, MINUS_T, MINUS_T, MINUS_T, MINUS_T, STATE_2, MINUS_T, MINUS_T, MINUS_T, MINUS_T},
+            {PLUS_T, PLUS_T, STATE_6, PLUS_T, PLUS_T, PLUS_T, PLUS_T, PLUS_T, PLUS_T, PLUS_T, PLUS_T, PLUS_T, PLUS_T, PLUS_T, PLUS_T, PLUS_T, STATE_3, PLUS_T, PLUS_T, PLUS_T, PLUS_T},
+            {ERROR_T, ERROR_T, ERROR_T, ERROR_T, ERROR_T, ERROR_T, ERROR_T, ERROR_T, ERROR_T, ERROR_T, ERROR_T, ERROR_T, ERROR_T, ERROR_T, ERROR_T, ERROR_T, STATE_6, ERROR_T, ERROR_T, ERROR_T, ERROR_T},
+            {NUMLIT_T, NUMLIT_T, STATE_6, NUMLIT_T, NUMLIT_T, NUMLIT_T, NUMLIT_T, NUMLIT_T, NUMLIT_T, NUMLIT_T, NUMLIT_T, NUMLIT_T, NUMLIT_T, NUMLIT_T, NUMLIT_T, NUMLIT_T, STATE_5, NUMLIT_T, NUMLIT_T, NUMLIT_T, NUMLIT_T},
+            {NUMLIT_T, NUMLIT_T, NUMLIT_T, NUMLIT_T, NUMLIT_T, NUMLIT_T, NUMLIT_T, NUMLIT_T, NUMLIT_T, NUMLIT_T, NUMLIT_T, NUMLIT_T, NUMLIT_T, NUMLIT_T, NUMLIT_T, NUMLIT_T, STATE_6, NUMLIT_T, NUMLIT_T, NUMLIT_T, NUMLIT_T},
             {GT_T, GT_T, GT_T, GT_T, GT_T, GT_T, GT_T, GTE_T, GT_T, GT_T, GT_T, GT_T, GT_T, GT_T, GT_T, GT_T, GT_T, GT_T, GT_T, GT_T, GT_T},
             {LT_T, LT_T, LT_T, LT_T, LT_T, LT_T, LT_T, LTE_T, LT_T, LT_T, LT_T, LT_T, LT_T, LT_T, LT_T, LT_T, LT_T, LT_T, LT_T, LT_T, LT_T},
-            {IDENT_T, IDENT_T, IDENT_T, IDENT_T, IDENT_T, IDENT_T, IDENT_T, IDENT_T, IDENT_T, IDENT_T, IDENT_T, 12, 10, 11, 12, 12, 12, IDENT_T, 12, IDENT_T, IDENT_T},
-            {IDENT_T, IDENT_T, IDENT_T, IDENT_T, IDENT_T, IDENT_T, IDENT_T, IDENT_T, IDENT_T, IDENT_T, IDENT_T, 12, 12, 10, 14, 12, 12, IDENT_T, 12, IDENT_T, IDENT_T},
-            {IDENT_T, IDENT_T, IDENT_T, IDENT_T, IDENT_T, IDENT_T, IDENT_T, IDENT_T, IDENT_T, IDENT_T, IDENT_T, 12, 12, 11, 14, 12, 12, IDENT_T, 12, IDENT_T, IDENT_T},
-            {IDENT_T, IDENT_T, IDENT_T, IDENT_T, IDENT_T, IDENT_T, IDENT_T, IDENT_T, IDENT_T, IDENT_T, IDENT_T, 12, 12, 12, 12, 12, 13, IDENT_T, 13, IDENT_T, IDENT_T},
-            {IDENT_T, IDENT_T, IDENT_T, IDENT_T, IDENT_T, IDENT_T, IDENT_T, IDENT_T, IDENT_T, IDENT_T, IDENT_T, 13, 13, 13, 13, 13, 13, IDENT_T, 13, IDENT_T, IDENT_T},
-            {LISTOP_T, LISTOP_T, LISTOP_T, LISTOP_T, LISTOP_T, LISTOP_T, LISTOP_T, LISTOP_T, LISTOP_T, LISTOP_T, LISTOP_T, 12, 12, 12, 12, 12, 12, LISTOP_T, 12, LISTOP_T, LISTOP_T},
-            {15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, STRLIT_T, 15}
+            {IDENT_T, IDENT_T, IDENT_T, IDENT_T, IDENT_T, IDENT_T, IDENT_T, IDENT_T, IDENT_T, IDENT_T, IDENT_T, STATE_12, STATE_10, STATE_11, STATE_12, STATE_12, STATE_12, IDENT_T, STATE_12, IDENT_T, IDENT_T},
+            {IDENT_T, IDENT_T, IDENT_T, IDENT_T, IDENT_T, IDENT_T, IDENT_T, IDENT_T, IDENT_T, IDENT_T, IDENT_T, STATE_12, STATE_12, STATE_10, STATE_14, STATE_12, STATE_12, IDENT_T, STATE_12, IDENT_T, IDENT_T},
+            {IDENT_T, IDENT_T, IDENT_T, IDENT_T, IDENT_T, IDENT_T, IDENT_T, IDENT_T, IDENT_T, IDENT_T, IDENT_T, STATE_12, STATE_12, STATE_11, STATE_14, STATE_12, STATE_12, IDENT_T, STATE_12, IDENT_T, IDENT_T},
+            {IDENT_T, IDENT_T, IDENT_T, IDENT_T, IDENT_T, IDENT_T, IDENT_T, IDENT_T, IDENT_T, IDENT_T, IDENT_T, STATE_12, STATE_12, STATE_12, STATE_12, STATE_12, STATE_13, IDENT_T, STATE_13, IDENT_T, IDENT_T},
+            {IDENT_T, IDENT_T, IDENT_T, IDENT_T, IDENT_T, IDENT_T, IDENT_T, IDENT_T, IDENT_T, IDENT_T, IDENT_T, STATE_13, STATE_13, STATE_13, STATE_13, STATE_13, STATE_13, IDENT_T, STATE_13, IDENT_T, IDENT_T},
+            {LISTOP_T, LISTOP_T, LISTOP_T, LISTOP_T, LISTOP_T, LISTOP_T, LISTOP_T, LISTOP_T, LISTOP_T, LISTOP_T, LISTOP_T, STATE_12, STATE_12, STATE_12, STATE_12, STATE_12, STATE_12, LISTOP_T, STATE_12, LISTOP_T, LISTOP_T},
+            {STATE_15, STATE_15, STATE_15, STATE_15, STATE_15, STATE_15, STATE_15, STATE_15, STATE_15, STATE_15, STATE_15, STATE_15, STATE_15, STATE_15, STATE_15, STATE_15, STATE_15, STATE_15, STATE_15, STRLIT_T, STATE_15}
     };
 
     map<string, string> keyNames;
-    keyNames.insert(pair<string, string>("cons", "CONST_T"));
+    keyNames.insert(pair<string, string >("cons", "CONST_T"));
     keyNames.insert(pair<string, string>("if", "IF_T"));
     keyNames.insert(pair<string, string>("cond", "COND_T"));
     keyNames.insert(pair<string, string>("else", "ELSE_T"));
@@ -85,9 +84,19 @@ token_type LexicalAnalyzer::GetToken ()
     int inputVal = 0;
     int currentPos = 0;
     string word;
-    while(input.get(c)) {
+    while(state > 0) {
+        if (!input.get(c)) {
+            tokenFile << left << setw(10) << "EOF_T" << setw(20) << word << endl;
+            linenum++;
+            listingFile << setw(5) << linenum << ": " << line << endl;
+            listingFile << errors << " errors found in input file\n";
+            return EOF_T;
+        }
+
         currentPos++;
-        if (c != '\n' || input.peek() == '\n')
+        if (isblank(c) == 0 && input.peek() == '\n') // Prevent error on blank line
+            input.get(c);
+        if (c != '\n' || input.peek() == '\n') // Increment line count
             line += c;
         state--; // Because our states start at 1, but C++ starts at 0
         word += c;
@@ -145,42 +154,42 @@ token_type LexicalAnalyzer::GetToken ()
 
         if (c == '\n') { // End of line
             linenum++;
-            listingFile << setw(5) << linenum << ": " << line;
+            listingFile << setw(5) << linenum << ": " << line << endl;
             if (pos != -1)
-                listingFile << "\nError at " << linenum << "," << pos << ": Invalid character found: " << errorChar << endl;
+                listingFile << "Error at " << linenum << "," << pos << ": Invalid character found: " << errorChar << endl;
             line.clear();
 
             pos = -1;
             currentPos = 0;
         }
 
-        if (state <= 0) { // Found Token
-            // Leading and trailing spaces fucking up the map
-            word.erase(remove_if(word.begin(), word.end(), ::isspace), word.end());
-
-            if (state == 0 && !word.empty() && word != "\n") { // ERROR!
-                pos = currentPos;
-                errorChar = c;
-                errors++;
-                tokenFile << left << setw(10) << token_names[state+17] << setw(20) << word << endl;
-
-            } else if (state == -17) { // Token is IDENT_T?
-                map<string, string>::iterator it;
-                token = EOF_T; // Garbage, fix later.
-
-
-                it = keyNames.find(word);
-                if (it == keyNames.end())
-                    tokenFile << left << setw(10) << token_names[state + 17] << setw(20) << word << endl;
-                else
-                    tokenFile << left << setw(10) << it->second << setw(20) << word << endl;
-            } else
-                tokenFile << left << setw(10) << token_names[state+17] << setw(20) << word << endl;
-            state = 1;
-            word.clear();
-        }
     }
-    listingFile << errors << " errors found in input file\n";
+    token = table[state][inputVal];
+    // Leading and trailing spaces fucking up the map
+    word.erase(remove_if(word.begin(), word.end(), ::isspace), word.end());
+
+    if (state == 0 && !word.empty() && word != "\n") { // ERROR!
+        pos = currentPos;
+        errorChar = c;
+        errors++;
+        //tokenFile << left << setw(10) << token_names[state+17] << setw(20) << word << endl;
+        lexeme = token_names[state+17];
+
+    } else if (state == -17) { // Token is IDENT_T?
+        map<string, string>::iterator it;
+
+        it = keyNames.find(word);
+        if (it == keyNames.end())
+            lexeme = token_names[state+17];
+        else
+            lexeme = it->second;
+    } else
+        lexeme = token_names[state+17];
+
+    tokenFile << left << setw(10) << lexeme << setw(20) << word << endl;
+
+    word.clear();
+
     return token;
 }
 
@@ -195,7 +204,7 @@ string LexicalAnalyzer::GetLexeme () const
 {
     // This function will return the lexeme found by the most recent call to
     // the get_token function
-    return "";
+    return lexeme;
 }
 
 void LexicalAnalyzer::ReportError (const string & msg)
