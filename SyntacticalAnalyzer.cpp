@@ -5,7 +5,6 @@
 #include <iostream>
 #include <iomanip>
 #include <fstream>
-#include <cstring>
 #include "SyntacticalAnalyzer.h"
 
 using namespace std;
@@ -23,9 +22,9 @@ SyntacticalAnalyzer::SyntacticalAnalyzer (char * filename)
 
     while ((t = lex->GetToken()) != EOF_T)
     {
-        tokenFile << left << setw(10) << lex->GetTokenName(t) << setw(20) << lex->GetLexeme() << endl;
+        tokenFile << "\t\t" << setw(15) << lex->GetTokenName(t) << setw(20) << lex->GetLexeme() << left << endl;
     }
-    tokenFile << left << setw(10) << "EOF_T" << setw(20) << endl;
+    tokenFile << "\t\t" << setw(15) << "EOF_T" << setw(20) << left << endl;
 }
 
 SyntacticalAnalyzer::~SyntacticalAnalyzer ()

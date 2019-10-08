@@ -169,14 +169,11 @@ token_type LexicalAnalyzer::GetToken ()
                 col = 20;
         }
         state = table[state][col];
-
         pos++;
-
     }
     tState = state;
+
     // Leading and trailing spaces messing up the map
-
-
     const auto strBegin = word.find_first_not_of(" \t");
     if (strBegin == std::string::npos)
         word = "";
