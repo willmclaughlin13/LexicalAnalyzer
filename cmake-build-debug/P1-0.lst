@@ -1,16 +1,21 @@
 Input file: P1-0.ss
-    1: identifier ident_1 function
-    2: 0 123 1.1 -1.1 +1.1 12. -.1
-    3: "Hello World"
-    4: 
-    5: cons if cond display newline and or not define
-    6: car cdr cadr cddr ?number
-Error at 6,1: Invalid character found: ?
-    7: number? list?$zero? null? string?
-Error at 7,1: Invalid character found: $
-    8: 
-    9: + - / * modulo round
-   10: = > < >= <=
-   11: ( ) 'a
-   12: 
+    1: identifier ident_1 function 
+
+    2: 0 123 1.1 -1.1 +1.1 12. -.1 
+
+    3: "Hello World" 
+
+    4: cons if cond display newline and or not define 
+
+    5: car cdr cadr cddr ?number 
+
+    6: number? list?$zero? null? string? 
+
+    7: + - / * modulo round 
+
+    8: = > < >= <= 
+
+    9: ( ) 'a 
+
+    9: 
 2 errors found in input file

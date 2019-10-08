@@ -10,13 +10,16 @@ static string token_names[] = {	"IDENT_T", "NUMLIT_T", "STRLIT_T", "LISTOP_T", "
                                    "GT_T", "LT_T", "GTE_T", "LTE_T", "LPAREN_T", "RPAREN_T",
                                    "SQUOTE_T", "ERROR_T"};
 
+map<string, string> keyNames;
+
 LexicalAnalyzer::LexicalAnalyzer (char * filename)
 {
     // This function will initialize the lexical analyzer class
     token = NONE;
     linenum = 0;
-    pos = -1;
+    pos = 0;
     errors = 0;
+
 
     string rootFileName = filename;
     for (int i = 0; i < 3; ++i) {
@@ -27,6 +30,30 @@ LexicalAnalyzer::LexicalAnalyzer (char * filename)
     debugFile.open(rootFileName + ".dbg", ofstream::out | ofstream::trunc);
     tokenFile.open(rootFileName + ".p1", ofstream::out | ofstream::trunc);
     listingFile << "Input file: " << rootFileName + ".ss" << endl;
+
+    getline(input, line);
+    line += " \n";
+
+    linenum++;
+    listingFile << setw(5) << linenum << ": " << line << endl;
+
+    keyNames.insert(pair<string, string >("cons", "CONST_T"));
+    keyNames.insert(pair<string, string>("if", "IF_T"));
+    keyNames.insert(pair<string, string>("cond", "COND_T"));
+    keyNames.insert(pair<string, string>("else", "ELSE_T"));
+    keyNames.insert(pair<string, string>("display", "DISPLAY_T"));
+    keyNames.insert(pair<string, string>("newline", "NEWLINE_T"));
+    keyNames.insert(pair<string, string>("and", "AND_T"));
+    keyNames.insert(pair<string, string>("or", "OR_T"));
+    keyNames.insert(pair<string, string>("not", "NOT_T"));
+    keyNames.insert(pair<string, string>("define", "DEFINE_T"));
+    keyNames.insert(pair<string, string>("number?", "NUMBERP_T"));
+    keyNames.insert(pair<string, string>("list?", "LISTP_T"));
+    keyNames.insert(pair<string, string>("zero?", "ZEROP_T"));
+    keyNames.insert(pair<string, string>("null?", "NULLP_T"));
+    keyNames.insert(pair<string, string>("string?", "STRINGP_T"));
+    keyNames.insert(pair<string, string>("modulo", "MODULO_T"));
+    keyNames.insert(pair<string, string>("round", "ROUND_T"));
 }
 
 LexicalAnalyzer::~LexicalAnalyzer ()
@@ -61,118 +88,103 @@ token_type LexicalAnalyzer::GetToken ()
             {STATE_15, STATE_15, STATE_15, STATE_15, STATE_15, STATE_15, STATE_15, STATE_15, STATE_15, STATE_15, STATE_15, STATE_15, STATE_15, STATE_15, STATE_15, STATE_15, STATE_15, STATE_15, STATE_15, STRLIT_T, STATE_15}
     };
 
-    map<string, string> keyNames;
-    keyNames.insert(pair<string, string >("cons", "CONST_T"));
-    keyNames.insert(pair<string, string>("if", "IF_T"));
-    keyNames.insert(pair<string, string>("cond", "COND_T"));
-    keyNames.insert(pair<string, string>("else", "ELSE_T"));
-    keyNames.insert(pair<string, string>("display", "DISPLAY_T"));
-    keyNames.insert(pair<string, string>("newline", "NEWLINE_T"));
-    keyNames.insert(pair<string, string>("and", "AND_T"));
-    keyNames.insert(pair<string, string>("or", "OR_T"));
-    keyNames.insert(pair<string, string>("not", "NOT_T"));
-    keyNames.insert(pair<string, string>("define", "DEFINE_T"));
-    keyNames.insert(pair<string, string>("number?", "NUMBERP_T"));
-    keyNames.insert(pair<string, string>("list?", "LISTP_T"));
-    keyNames.insert(pair<string, string>("zero?", "ZEROP_T"));
-    keyNames.insert(pair<string, string>("null?", "NULLP_T"));
-    keyNames.insert(pair<string, string>("string?", "STRINGP_T"));
-    keyNames.insert(pair<string, string>("modulo", "MODULO_T"));
-    keyNames.insert(pair<string, string>("round", "ROUND_T"));
-
     char c;
-    int inputVal = 0;
-    int currentPos = 0;
+    int col = 0;
     string word;
     while(state > 0) {
-        if (!input.get(c)) {
-            tokenFile << left << setw(10) << "EOF_T" << setw(20) << word << endl;
-            linenum++;
-            listingFile << setw(5) << linenum << ": " << line << endl;
-            listingFile << errors << " errors found in input file\n";
-            return EOF_T;
+        c = line[pos];
+
+        if (c == '\n'){
+
+            if (getline(input, line)) {
+                linenum++;
+                line += " \n";
+                c = line[pos];
+                listingFile << setw(5) << linenum << ": " << line << endl;
+
+//                if (pos != -1)
+//                    listingFile << "Error at " << linenum << "," << pos << ": Invalid character found: " << errorChar << endl;
+                line.clear();
+            } else { // End of file
+                tokenFile << left << setw(10) << "EOF_T" << setw(20) << word << endl;
+                listingFile << setw(5) << linenum << ": " << line << endl;
+                listingFile << errors << " errors found in input file\n";
+                return EOF_T;
+            }
+            pos = 0;
         }
 
-        currentPos++;
-        if (isblank(c) == 0 && input.peek() == '\n') // Prevent error on blank line
-            input.get(c);
-        if (c != '\n' || input.peek() == '\n') // Increment line count
-            line += c;
+
+
+//        if (isblank(c) == 0 && input.peek() == '\n') // Prevent error on blank line
+//            input.get(c);
+//        if (c != '\n' || input.peek() == '\n') // Increment line count
+//            lineCounter += c;
         state--; // Because our states start at 1, but C++ starts at 0
         word += c;
 
         bool other = false;
         switch(c) {
             case '+':
-                inputVal = 0;break;
+                col = 0;break;
             case '-':
-                inputVal = 1;break;
+                col = 1;break;
             case '.':
-                inputVal = 2;break;
+                col = 2;break;
             case '/':
-                inputVal = 3;break;
+                col = 3;break;
             case '*':
-                inputVal = 4;break;
+                col = 4;break;
             case '>':
-                inputVal = 5;break;
+                col = 5;break;
             case '<':
-                inputVal = 6;break;
+                col = 6;break;
             case '=':
-                inputVal = 7;break;
+                col = 7;break;
             case '(':
-                inputVal = 8;break;
+                col = 8;break;
             case ')':
-                inputVal = 9;break;
+                col = 9;break;
             case '\'':
-                inputVal = 10;break;
+                col = 10;break;
             case 'c':
-                inputVal = 11;break;
+                col = 11;break;
             case 'a':
-                inputVal = 12;break;
+                col = 12;break;
             case 'd':
-                inputVal = 13;break;
+                col = 13;break;
             case 'r':
-                inputVal = 14;break;
+                col = 14;break;
             case ' ':
-                inputVal = 17;break;
+                col = 17;break;
             case '_':
-                inputVal = 18;break;
+                col = 18;break;
             case '"':
-                inputVal = 19;break;
+                col = 19;break;
             default:
                 other = true;break;
         }
         if (other) {
             if (isalpha(c))
-                inputVal = 15;
+                col = 15;
             else if (isdigit(c))
-                inputVal = 16;
+                col = 16;
             else
-                inputVal = 20;
+                col = 20;
         }
-        state = table[state][inputVal];
+        state = table[state][col];
 
-        if (c == '\n') { // End of line
-            linenum++;
-            listingFile << setw(5) << linenum << ": " << line << endl;
-            if (pos != -1)
-                listingFile << "Error at " << linenum << "," << pos << ": Invalid character found: " << errorChar << endl;
-            line.clear();
-
-            pos = -1;
-            currentPos = 0;
-        }
+        pos++;
 
     }
-    token = table[state][inputVal];
+    token = table[state][col];
     // Leading and trailing spaces fucking up the map
     word.erase(remove_if(word.begin(), word.end(), ::isspace), word.end());
 
     if (state == 0 && !word.empty() && word != "\n") { // ERROR!
-        pos = currentPos;
+        //pos = currentPos;
         errorChar = c;
         errors++;
-        //tokenFile << left << setw(10) << token_names[state+17] << setw(20) << word << endl;
         lexeme = token_names[state+17];
 
     } else if (state == -17) { // Token is IDENT_T?
