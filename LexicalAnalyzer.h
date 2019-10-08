@@ -62,8 +62,11 @@ private:
     ofstream debugFile;
     token_type token;
     string line;
+    bool err;
     int linenum;
     int pos;
+    int errPos;
+    int tState;
     string lexeme;
     int errors;
     char errorChar;

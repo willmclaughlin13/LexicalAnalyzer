@@ -12,11 +12,17 @@ using namespace std;
 
 SyntacticalAnalyzer::SyntacticalAnalyzer (char * filename)
 {
+    string rootFileName = filename;
+    for (int i = 0; i < 3; ++i) {
+        rootFileName.pop_back();
+    }
+    ofstream tokenFile;
+    tokenFile.open(rootFileName + ".p1", ofstream::out | ofstream::trunc);
     lex = new LexicalAnalyzer (filename);
     token_type t;
     while ((t = lex->GetToken()) != EOF_T)
     {
-        //cout << lex->GetLexeme() << endl;
+        tokenFile << left << setw(10) << lex->GetTokenName(token) << setw(20) << lex->GetLexeme() << endl;
     }
 }
 
