@@ -20,10 +20,12 @@ SyntacticalAnalyzer::SyntacticalAnalyzer (char * filename)
     tokenFile.open(rootFileName + ".p1", ofstream::out | ofstream::trunc);
     lex = new LexicalAnalyzer (filename);
     token_type t;
+
     while ((t = lex->GetToken()) != EOF_T)
     {
-        tokenFile << left << setw(10) << lex->GetTokenName(token) << setw(20) << lex->GetLexeme() << endl;
+        tokenFile << left << setw(10) << lex->GetTokenName(t) << setw(20) << lex->GetLexeme() << endl;
     }
+    tokenFile << left << setw(10) << "EOF_T" << setw(20) << endl;
 }
 
 SyntacticalAnalyzer::~SyntacticalAnalyzer ()

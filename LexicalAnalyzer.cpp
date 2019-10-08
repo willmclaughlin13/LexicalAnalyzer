@@ -36,8 +36,8 @@ LexicalAnalyzer::LexicalAnalyzer (char * filename)
     getline(input, line);
     line += " \n";
 
-    linenum++;
-    listingFile << setw(5) << linenum << ": " << line;
+    //linenum++;
+    //listingFile << setw(5) << linenum << ": " << line;
 
     keyNames.insert(pair<string, string >("cons", "CONST_T"));
     keyNames.insert(pair<string, string>("if", "IF_T"));
@@ -95,27 +95,25 @@ token_type LexicalAnalyzer::GetToken ()
     string word;
     while(state > 0) {
         c = line[pos];
-
         if (c == '\n'){
-
             if (getline(input, line)) {
+                pos = 0;
                 linenum++;
                 line += " \n";
                 c = line[pos];
                 listingFile << setw(5) << linenum << ": " << line;
 
-                if (err)
-                    listingFile << "Error at " << linenum << "," << errPos << ": Invalid character found: " << errorChar << endl;
+                if (err) {
+                    string error = "Error at " + to_string(linenum) + "," + to_string(errPos) + ": Invalid character found: " + errorChar;
+                    ReportError(error);
+                }
                 err = false;
                 errPos = 0;
                 line.clear();
             } else { // End of file
-                tokenFile << left << setw(10) << "EOF_T" << setw(20) << word << endl;
-                //listingFile << setw(5) << linenum << ": " << line << endl;
                 listingFile << errors << " errors found in input file" << endl;
                 return EOF_T;
             }
-            pos = 0;
         }
 
         state--; // Because our states start at 1, but C++ starts at 0
@@ -176,30 +174,26 @@ token_type LexicalAnalyzer::GetToken ()
 
     }
     tState = state;
-    // Leading and trailing spaces fucking up the map
-    word.erase(remove_if(word.begin(), word.end(), ::isspace), word.end());
+    // Leading and trailing spaces messing up the map
+
+
+    const auto strBegin = word.find_first_not_of(" \t");
+    if (strBegin == std::string::npos)
+        word = "";
+
+    const auto strEnd = word.find_last_not_of(" \t");
+    const auto strRange = strEnd - strBegin + 1;
+
+    word = word.substr(strBegin, strRange);
+
     lexeme = word;
 
-    if (state == 0 && !word.empty()) { // ERROR!
+    if (state == 0) { // ERROR!
         err = true;
         errorChar = c;
         errPos = pos;
         errors++;
     }
-/*    if (state == 0 && !word.empty() && word != "\n") { // ERROR!
-        //pos = currentPos;
-        errorChar = c;
-        errors++;
-        //lexeme = token_names[state+17];
-
-    } else if (state == -17) { // Token is IDENT_T?
-        map<string, string>::iterator it;
-
-        it = keyNames.find(word);
-        if (it != keyNames.end())
-            lexeme = it->second;
-    } else
-        lexeme = token_names[state+17];*/
 
     word.clear();
 
@@ -216,8 +210,11 @@ string LexicalAnalyzer::GetTokenName (token_type t) const
         it = keyNames.find(this->GetLexeme());
         if (it != keyNames.end())
             return it->second;
-    } else
-        return token_names[tState+17];
+        else
+            return token_names[tState + 17];
+    } else {
+        return token_names[tState + 17];
+    }
 }
 
 string LexicalAnalyzer::GetLexeme () const
@@ -230,6 +227,7 @@ string LexicalAnalyzer::GetLexeme () const
 void LexicalAnalyzer::ReportError (const string & msg)
 {
     // This function will be called to write an error message to a file
+    listingFile << msg << endl;
 }
 
 
