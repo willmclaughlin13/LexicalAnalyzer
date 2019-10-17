@@ -4,12 +4,12 @@ set(CMAKE_DEPENDS_LANGUAGES
   )
 # The set of files for implicit dependencies of each language:
 set(CMAKE_DEPENDS_CHECK_CXX
-  "/mnt/c/Users/Will/Documents/CS460/Project 1/LexicalAnalyzer.cpp" "/mnt/c/Users/Will/Documents/CS460/Project 1/cmake-build-debug/CMakeFiles/Project_1.dir/LexicalAnalyzer.cpp.o"
-  "/mnt/c/Users/Will/Documents/CS460/Project 1/Project1.cpp" "/mnt/c/Users/Will/Documents/CS460/Project 1/cmake-build-debug/CMakeFiles/Project_1.dir/Project1.cpp.o"
-  "/mnt/c/Users/Will/Documents/CS460/Project 1/SetLimits.cpp" "/mnt/c/Users/Will/Documents/CS460/Project 1/cmake-build-debug/CMakeFiles/Project_1.dir/SetLimits.cpp.o"
-  "/mnt/c/Users/Will/Documents/CS460/Project 1/SyntacticalAnalyzer.cpp" "/mnt/c/Users/Will/Documents/CS460/Project 1/cmake-build-debug/CMakeFiles/Project_1.dir/SyntacticalAnalyzer.cpp.o"
+  "/Users/will/Documents/LexicalAnalyzer/LexicalAnalyzer.cpp" "/Users/will/Documents/LexicalAnalyzer/cmake-build-debug/CMakeFiles/Project_1.dir/LexicalAnalyzer.cpp.o"
+  "/Users/will/Documents/LexicalAnalyzer/Project1.cpp" "/Users/will/Documents/LexicalAnalyzer/cmake-build-debug/CMakeFiles/Project_1.dir/Project1.cpp.o"
+  "/Users/will/Documents/LexicalAnalyzer/SetLimits.cpp" "/Users/will/Documents/LexicalAnalyzer/cmake-build-debug/CMakeFiles/Project_1.dir/SetLimits.cpp.o"
+  "/Users/will/Documents/LexicalAnalyzer/SyntacticalAnalyzer.cpp" "/Users/will/Documents/LexicalAnalyzer/cmake-build-debug/CMakeFiles/Project_1.dir/SyntacticalAnalyzer.cpp.o"
   )
-set(CMAKE_CXX_COMPILER_ID "GNU")
+set(CMAKE_CXX_COMPILER_ID "AppleClang")
 
 # The include file search paths:
 set(CMAKE_CXX_TARGET_INCLUDE_PATH

@@ -36,8 +36,8 @@ LexicalAnalyzer::LexicalAnalyzer (char * filename)
     getline(input, line);
     line += " \n";
 
-    //linenum++;
-    //listingFile << setw(5) << linenum << ": " << line;
+    linenum++;
+    listingFile << setw(2) << linenum << ": " << line;
 
     keyNames.insert(pair<string, string >("cons", "CONST_T"));
     keyNames.insert(pair<string, string>("if", "IF_T"));
@@ -101,7 +101,7 @@ token_type LexicalAnalyzer::GetToken ()
                 linenum++;
                 line += " \n";
                 c = line[pos];
-                listingFile << setw(5) << linenum << ": " << line;
+                listingFile << setw(3) << linenum << ": " << line;
 
                 if (err) {
                     string error = "Error at " + to_string(linenum) + "," + to_string(errPos) + ": Invalid character found: " + errorChar;
@@ -111,6 +111,8 @@ token_type LexicalAnalyzer::GetToken ()
                 errPos = 0;
                 line.clear();
             } else { // End of file
+                linenum++;
+                listingFile << setw(3) << linenum << ": " << line << endl;
                 listingFile << errors << " errors found in input file" << endl;
                 return EOF_T;
             }

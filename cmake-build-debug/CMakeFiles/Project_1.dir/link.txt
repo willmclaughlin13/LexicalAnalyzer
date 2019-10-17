@@ -1,1 +1,1 @@
-/usr/bin/c++  -g   CMakeFiles/Project_1.dir/Project1.cpp.o CMakeFiles/Project_1.dir/LexicalAnalyzer.cpp.o CMakeFiles/Project_1.dir/SetLimits.cpp.o CMakeFiles/Project_1.dir/SyntacticalAnalyzer.cpp.o  -o Project_1 
+/Library/Developer/CommandLineTools/usr/bin/c++  -g -Wl,-search_paths_first -Wl,-headerpad_max_install_names  CMakeFiles/Project_1.dir/Project1.cpp.o CMakeFiles/Project_1.dir/LexicalAnalyzer.cpp.o CMakeFiles/Project_1.dir/SetLimits.cpp.o CMakeFiles/Project_1.dir/SyntacticalAnalyzer.cpp.o  -o Project_1 

@@ -22,9 +22,9 @@ SyntacticalAnalyzer::SyntacticalAnalyzer (char * filename)
 
     while ((t = lex->GetToken()) != EOF_T)
     {
-        tokenFile << "\t\t" << setw(15) << lex->GetTokenName(t) << setw(20) << lex->GetLexeme() << left << endl;
+        tokenFile << "\t\t" << left << setw(15) << lex->GetTokenName(t) << lex->GetLexeme() << endl;
     }
-    tokenFile << "\t\t" << setw(15) << "EOF_T" << setw(20) << left << endl;
+    tokenFile << "\t\t" << left << "EOF_T" << endl;
 }
 
 SyntacticalAnalyzer::~SyntacticalAnalyzer ()
